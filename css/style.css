@@ -1,0 +1,964 @@
+/* ===========================================================
+   Devocionário — folha de estilo
+   Paleta clara, cards em gradiente por categoria, navegação
+   inferior por abas — inspirado no padrão de apps de oração.
+   =========================================================== */
+
+:root{
+  color-scheme: light;
+  --bg:            #FAF8F5;
+  --bg-elevated:   #FFFFFF;
+  --card:          #FFFFFF;
+  --card-border:   #E9EEF1;
+  --card-border-thin: #E5DEC9;
+  --ink:           #121E2B;
+  --ink-dim:       #46586B;
+  --ink-faint:     #8A97A3;
+  --gold:          #C5A059;
+  --gold-dim:      #A3813F;
+  --wine:          #8C3232;
+  --rubric:        #8C3232;
+  --divider:       #E5D5B8;
+  --shadow:        0 4px 12px rgba(0,0,0,.03);
+
+  --font-display: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  --font-body:    'EB Garamond', Georgia, serif;
+  --font-support: 'Lora', 'EB Garamond', Georgia, serif;
+  --font-ui:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-missal: 6px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --tabbar-h: 64px;
+}
+
+/* ---------- modo escuro (capela à noite) ---------- */
+html[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:            #14181D;
+  --bg-elevated:   #1B2027;
+  --card:          #1E242B;
+  --card-border:   #2C333B;
+  --card-border-thin: #3A3226;
+  --ink:           #EDE7DC;
+  --ink-dim:       #B7AF9F;
+  --ink-faint:     #7C7568;
+  --gold:          #D4B26A;
+  --gold-dim:      #C5A059;
+  --wine:          #C77A7A;
+  --rubric:        #D98888;
+  --divider:       #3A3226;
+  --shadow:        0 4px 14px rgba(0,0,0,.35);
+}
+
+*{ box-sizing: border-box; }
+
+
+html, body{
+  margin:0; padding:0;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+}
+
+body{
+  min-height: 100dvh;
+  padding-top: var(--safe-top);
+  padding-bottom: calc(var(--tabbar-h) + var(--safe-bottom));
+}
+
+#app{
+  background-color: var(--bg);
+  min-height: calc(100dvh - var(--tabbar-h));
+}
+
+.view{
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity .38s cubic-bezier(.22,.61,.36,1), transform .38s cubic-bezier(.22,.61,.36,1);
+}
+.view.active{ opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce){
+  .view{ transition: none; opacity: 1; transform: none; }
+}
+
+a{ color: inherit; text-decoration:none; }
+button{ font-family: inherit; }
+.hidden{ display:none !important; }
+
+/* ---------- top bar ---------- */
+.topbar{
+  position: sticky; top:0; z-index: 20;
+  display:flex; align-items:center; gap:.75rem;
+  padding: 1rem 1.25rem calc(1rem - 6px);
+  background: var(--bg);
+}
+.topbar .brand{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing:.01em;
+  color: var(--ink);
+  display:flex; align-items:center; gap:.5rem;
+}
+.topbar .brand .flame{ width:16px; height:16px; display:inline-flex; color: var(--gold); }
+.topbar .brand .flame svg{ width:100%; height:100%; display:block; }
+
+.btn-icon{
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  color: var(--ink-dim);
+  width:38px; height:38px; border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 1rem;
+  cursor:pointer;
+  box-shadow: var(--shadow);
+}
+.btn-icon:active{ background: var(--bg); }
+.btn-icon.is-active{ color: var(--wine); }
+
+.user-badge{
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--wine);
+  color: #FAF6EE;
+  border: none;
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: .82rem;
+  letter-spacing: .02em;
+  cursor: pointer;
+  margin-left: .55rem;
+  flex-shrink: 0;
+}
+.user-badge:active{ opacity: .85; }
+
+/* ---------- ícones SVG inline (base) ---------- */
+.icon-svg{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15em;
+  height: 1.15em;
+  color: currentColor;
+}
+.icon-svg svg{ width: 100%; height: 100%; display: block; }
+.icon-svg-sm{ width: 1em; height: 1em; }
+
+.topbar .spacer{ flex:1; }
+
+/* ---------- hero / greeting ---------- */
+.hero{
+  padding: .25rem 1.25rem 1rem;
+}
+.hero h1{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.9rem;
+  margin: .1rem 0 .3rem;
+  color: var(--ink);
+}
+.hero p{
+  margin:0;
+  color: var(--ink-dim);
+  font-size: .96rem;
+  max-width: 34ch;
+  line-height: 1.4;
+}
+.hero-compact{ padding-top: .1rem; padding-bottom: .3rem; }
+
+/* ---------- atalhos rápidos ---------- */
+.jaculatoria-card{
+  margin: 0 1.25rem 1.1rem;
+  padding: 1.3rem 1.4rem;
+  background: var(--card);
+  border: 0.5px solid var(--card-border-thin);
+  border-radius: var(--radius-missal);
+  text-align: center;
+}
+.jaculatoria-eyebrow{
+  font-family: var(--font-ui);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: .55rem;
+}
+.jaculatoria-texto{
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.4;
+  color: var(--ink);
+  margin: 0 0 .5rem;
+}
+.jaculatoria-fonte{
+  font-family: var(--font-support);
+  font-style: italic;
+  font-size: .78rem;
+  color: var(--ink-faint);
+}
+
+.shortcuts-row{
+  display: flex;
+  gap: .7rem;
+  padding: .2rem 1.25rem 1.1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.shortcuts-row::-webkit-scrollbar{ display: none; }
+.shortcut-card{
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .55rem;
+  width: 88px;
+  padding: 1.2rem .6rem;
+  background: var(--card);
+  border: 0.5px solid var(--card-border-thin);
+  border-radius: var(--radius-missal);
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+.shortcut-card:active{ background: var(--bg); }
+.shortcut-glyph{
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: .05em;
+  color: var(--gold-dim);
+  opacity: .8;
+}
+.shortcut-label{
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--ink-dim);
+  text-align: center;
+  line-height: 1.25;
+}
+
+/* ---------- banners hero ---------- */
+.hero-banners{
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+  padding: 0 1.25rem 1.2rem;
+}
+.hero-banner{
+  position: relative;
+  border-radius: 24px;
+  padding: 1.8rem 1.6rem;
+  min-height: 168px;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.hero-banner:active{ opacity: .92; }
+.hero-banner--rosario{ background: #2A1B17; }
+.hero-banner--diarias{ background: #16241F; }
+.hero-banner-frame{ display: none; }
+.hero-banner-glyph{
+  position: absolute;
+  right: 1.3rem; top: 1.2rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: .08em;
+  color: rgba(212, 178, 106, .55);
+}
+.hero-banner-glyph--icon{ font-size: 1.35rem; }
+.hero-banner-text{ position: relative; }
+.hero-banner-eyebrow{
+  font-family: var(--font-ui);
+  font-size: .66rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(212, 178, 106, .85);
+  margin-bottom: .4rem;
+}
+.hero-banner h2{
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.75rem;
+  letter-spacing: .015em;
+  margin: 0 0 .5rem;
+  color: #FAF6EE;
+}
+.hero-banner p{
+  font-family: var(--font-support);
+  font-size: .9rem;
+  color: rgba(250, 246, 238, .68);
+  margin: 0;
+  line-height: 1.45;
+
+}
+
+/* ---------- search bar ---------- */
+.search-wrap{ padding: .9rem 1.25rem 0; }
+.search-bar{
+  display:flex; align-items:center; gap:.6rem;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  padding: .75rem 1.05rem;
+  box-shadow: var(--shadow);
+}
+.search-bar svg, .search-bar .ico{ color: var(--ink-faint); font-size: 1rem; }
+.search-bar input{
+  border:none; outline:none; background:transparent;
+  font-family: var(--font-ui); font-size: .96rem; color: var(--ink);
+  flex:1; min-width:0;
+}
+.search-bar input::placeholder{ color: var(--ink-faint); }
+
+/* ---------- category grid (cards em gradiente) ---------- */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .9rem;
+  padding: 1.1rem 1.25rem 2rem;
+}
+@media(min-width:640px){
+  .grid{ grid-template-columns: repeat(3, 1fr); }
+}
+
+.cat-card{
+  position: relative;
+  border-radius: var(--radius-missal);
+  min-height: 148px;
+  padding: 1.5rem 1.3rem;
+  display:flex; flex-direction:column;
+  cursor:pointer;
+  background: var(--card);
+  border: 0.5px solid var(--card-border-thin);
+}
+.cat-card:active{ background: var(--bg); }
+.cat-card .icon-badge{
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  background: transparent;
+  border: 0.5px solid var(--card-border-thin);
+  margin-bottom: 1rem;
+}
+.cat-card .icon-badge .icon-glyph{
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--gold-dim);
+}
+.cat-card h3{
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: .015em;
+  margin: auto 0 0;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.cat-card .count{
+  margin-top:.35rem;
+  font-family: var(--font-support);
+  font-style: italic;
+  font-size: .78rem;
+  color: var(--ink-faint);
+}
+
+/* ---------- prayer list ---------- */
+.list-header{
+  padding: .25rem 1.25rem 1rem;
+}
+.list-header h2{
+  font-family: var(--font-display);
+  font-weight:600;
+  font-size: 1.7rem;
+  color: var(--ink);
+  margin: .25rem 0 .15rem;
+}
+.list-header .sub{ color: var(--ink-dim); font-size:.92rem; }
+
+.prayer-list{
+  list-style:none; margin:0; padding: 0 1.25rem 2.5rem;
+  display:flex; flex-direction:column; gap:.55rem;
+}
+.prayer-item{
+  background: var(--card);
+  border:1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: .95rem 1.05rem;
+  display:flex; align-items:center; gap:.75rem;
+  cursor:pointer;
+  box-shadow: var(--shadow);
+}
+.prayer-item:active{ background: var(--bg); }
+.prayer-item .num{
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-weight:600;
+  font-size: 1rem;
+  min-width: 1.4rem;
+  display:flex; align-items:center; justify-content:center;
+}
+.prayer-item .num .icon-svg{ width: 1.05rem; height: 1.05rem; color: var(--gold); }
+.prayer-item .title{
+  font-family: var(--font-body);
+  font-size: 1.08rem;
+  color: var(--ink);
+  flex:1;
+}
+.prayer-item .chev{ color: var(--ink-faint); }
+.prayer-item.is-pending{ opacity:.6; }
+.tag-pending{
+  font-family: var(--font-ui);
+  font-size: .62rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  padding: .2rem .5rem;
+  white-space: nowrap;
+}
+
+.empty-note{
+  margin: 0 1.25rem 2rem;
+  padding: 1rem 1.1rem;
+  border: 1px dashed var(--card-border);
+  border-radius: var(--radius);
+  color: var(--ink-faint);
+  font-size: .92rem;
+  line-height:1.5;
+  background: var(--card);
+}
+
+/* ---------- prayer reader ---------- */
+.reader{
+  padding: .5rem 1.4rem 3rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.reader .eyebrow-row{
+  display:flex; align-items:center; justify-content:space-between;
+  gap: .5rem;
+}
+.reader .eyebrow{
+  font-family: var(--font-ui);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+.reader h1{
+  font-family: var(--font-display);
+  font-weight:600;
+  font-size: 2.1rem;
+  line-height: 1.15;
+  color: var(--ink);
+  margin: .35rem 0 1.1rem;
+}
+.reader .attribution{
+  color: var(--ink-faint);
+  font-size: .85rem;
+  margin: -.7rem 0 1.4rem;
+  font-style: italic;
+}
+.reader .prayer-text{
+  font-size: var(--reader-size, 1.18rem);
+  line-height: 1.75;
+  color: var(--ink);
+}
+.reader .prayer-text p{ margin: 0 0 1rem; }
+/* ---------- selo de falante (Missa) ---------- */
+.fala-quem{
+  display: block;
+  font-family: var(--font-ui);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: .2rem;
+}
+.fala-quem--sacerdote{ color: var(--wine); }
+.fala-quem--povo{ color: var(--gold-dim); }
+.fala-quem--leitor{ color: var(--gold-dim); }
+.fala-quem--todos{ color: var(--ink-faint); }
+.fala-quem--diacono{ color: var(--wine); }
+
+/* ---------- rubrica (regra geral, cobre qualquer contêiner) ---------- */
+p.rubric{
+  font-family: var(--font-ui);
+  font-style: italic;
+  font-size: .82em;
+  color: var(--rubric);
+  line-height: 1.55;
+}
+
+.reader .prayer-text p.rubric{
+  font-family: var(--font-ui);
+  font-style: italic;
+  font-size: .82em;
+  color: var(--rubric);
+  line-height: 1.55;
+  margin: -.15rem 0 1.15rem;
+}
+.reader .prayer-text .dropcap::first-letter{
+  font-family: var(--font-display);
+  font-size: 3.1em;
+  float:left;
+  line-height: .78;
+  padding: .04em .09em 0 0;
+  color: var(--gold);
+}
+.pending-note{
+  border: 1px dashed var(--card-border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.2rem;
+  color: var(--ink-dim);
+  font-size: 1rem;
+  line-height: 1.6;
+  background: var(--card);
+}
+
+.reader-controls{
+  position: sticky;
+  top: calc(var(--safe-top) + 8px);
+  z-index: 15;
+  display:flex; align-items:center; gap:.6rem;
+  margin: 0 0 1.6rem auto;
+  padding: .4rem .5rem;
+  background: var(--card);
+  border:1px solid var(--card-border);
+  border-radius: 999px;
+  width: fit-content;
+  box-shadow: var(--shadow);
+}
+.reader-controls button{
+  background: transparent; border:none; color: var(--ink-dim);
+  width: 30px; height:30px; border-radius:50%;
+  font-size: .95rem; cursor:pointer;
+}
+.reader-controls button:active{ background: var(--bg); color: var(--wine); }
+.reader-controls .label{ font-family: var(--font-ui); font-size:.72rem; color: var(--ink-faint); padding: 0 .3rem; }
+
+/* ---------- install banner ---------- */
+.install-banner{
+  margin: 0 1.25rem 1.2rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  display:flex; align-items:center; gap:.85rem;
+  box-shadow: var(--shadow);
+}
+.install-banner .glyph{
+  width: 42px; height: 42px; flex-shrink:0;
+  border-radius: 13px;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 1.15rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--wine), var(--gold));
+  box-shadow: 0 3px 8px rgba(0,0,0,.18);
+}
+.install-banner .txt{ flex:1; font-size:.86rem; color: var(--ink-dim); }
+.install-banner .txt strong{ display:block; font-family: var(--font-display); font-size:1.05rem; margin-bottom:.15rem; color: var(--ink); }
+.install-banner button{
+  background: var(--wine); color: #fff; border:none;
+  padding:.5rem .85rem; border-radius: 999px; font-family: var(--font-ui);
+  font-size:.78rem; font-weight:600; cursor:pointer; white-space:nowrap;
+}
+.install-banner.hidden{ display:none; }
+
+/* ---------- favoritos ---------- */
+.fav-btn{
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  color: var(--ink-faint);
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 1.05rem; cursor:pointer;
+  box-shadow: var(--shadow);
+}
+.fav-btn.is-fav{ color: var(--wine); }
+
+/* ---------- footer / rule ---------- */
+.candle-rule{
+  display:flex; align-items:center; justify-content:center; gap: .6rem;
+  color: var(--gold-dim);
+  padding: 1rem 0 2.5rem;
+  font-size: .85rem;
+  border-top: 1px solid var(--divider);
+  margin-top: .5rem;
+}
+.candle-rule .line{ width: 34px; height:1px; background: var(--card-border); }
+
+/* ---------- bottom tab bar ---------- */
+.tabbar{
+  position: fixed; left:0; right:0; bottom:0; z-index: 30;
+  height: calc(var(--tabbar-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: var(--card);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--card-border);
+  display:flex; align-items:stretch;
+}
+.tab-btn{
+  flex:1;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.2rem;
+  background:none; border:none; cursor:pointer;
+  color: var(--ink-faint);
+  font-family: var(--font-ui);
+  font-size: .68rem;
+  padding-top: .3rem;
+}
+.tab-btn .ico{ width: 22px; height: 22px; display:flex; align-items:center; justify-content:center; }
+.tab-btn .ico svg{ width: 100%; height: 100%; display:block; }
+.tab-btn.active{ color: var(--wine); }
+
+/* ---------- Configurações ---------- */
+.config-section{
+  margin: 0 1.25rem 1.4rem;
+  padding: 1rem 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.config-label{
+  font-family: var(--font-ui);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: .6rem;
+}
+.config-input{
+  width: 100%;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: .6rem .8rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--bg);
+}
+.config-input:focus{ outline: 1px solid var(--gold); }
+.theme-toggle{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.theme-toggle-label{ font-size: 1rem; color: var(--ink); }
+.theme-toggle-switch{
+  position: relative;
+  width: 46px; height: 26px;
+  border-radius: 999px;
+  background: var(--card-border);
+  border: 1px solid var(--card-border-thin);
+  transition: background-color .25s ease;
+}
+.theme-toggle-knob{
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  transition: transform .25s cubic-bezier(.22,.61,.36,1);
+}
+.theme-toggle[aria-pressed="true"] .theme-toggle-switch{ background: var(--gold-dim); }
+.theme-toggle[aria-pressed="true"] .theme-toggle-knob{ transform: translateX(20px); }
+
+.config-about{
+  margin: 0;
+  font-size: .92rem;
+  line-height: 1.6;
+  color: var(--ink-dim);
+}
+.config-section .prayer-list{ padding: 0; gap: .5rem; }
+
+/* ---------- Rosário ---------- */
+.chip-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  padding: 0 1.25rem 1.2rem;
+}
+.chip{
+  padding: .45rem .9rem;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--ink-dim);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.chip.active{
+  background: var(--wine);
+  border-color: var(--wine);
+  color: #fff;
+}
+.btn-icon, .shortcut-card, .hero-banner, .cat-card, .prayer-item,
+.reader-controls button, .chip, .tab-btn, .oracao-collapse summary,
+.guia-oracao summary, .misterio-titulo, .config-input{
+  transition: background-color .28s cubic-bezier(.22,.61,.36,1),
+              color .28s cubic-bezier(.22,.61,.36,1),
+              border-color .28s cubic-bezier(.22,.61,.36,1),
+              transform .28s cubic-bezier(.22,.61,.36,1);
+}
+.chip:active{ transform: scale(.96); }
+@media (prefers-reduced-motion: reduce){
+  .btn-icon, .shortcut-card, .hero-banner, .cat-card, .prayer-item,
+  .reader-controls button, .chip, .tab-btn, .oracao-collapse summary,
+  .guia-oracao summary, .misterio-titulo, .config-input{ transition: none; }
+}
+
+.misterio-bloco{
+  margin: 0 1.25rem 2.2rem;
+  padding: 1.1rem 1.2rem;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.misterio-bloco.is-destaque{
+  border: 1px solid var(--divider);
+}
+.misterio-eyebrow{
+  font-family: var(--font-ui);
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: .4rem;
+}
+.misterio-bloco h2{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0 0 .9rem;
+  color: var(--ink);
+  border-bottom: 1px solid var(--divider);
+  padding-bottom: .6rem;
+}
+.misterio-dezena{ margin-bottom: 1.8rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--card-border); }
+.misterio-dezena:last-child{ margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.misterio-titulo{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin-bottom: .4rem;
+}
+.misterio-contemplacao, .misterio-peticao{
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 0 0 .6rem;
+}
+.rubric-dezena{
+  margin: .2rem 0 0 !important;
+}
+
+.rosario-fluxo{ padding-top: 0; }
+.rosario-fluxo .misterio-bloco{ margin-left: 0; margin-right: 0; }
+.rosario-introducao p, .rosario-encerramento p{
+  font-size: 1.08rem;
+  line-height: 1.75;
+  color: var(--ink);
+  margin: 0 0 .6rem;
+}
+.rosario-introducao p:last-child, .rosario-encerramento p:last-child{ margin-bottom: 0; }
+.rosario-introducao p.rubric, .rosario-encerramento p.rubric{
+  font-family: var(--font-ui);
+  font-style: italic;
+  font-size: .82em;
+  color: var(--rubric);
+}
+.misterio-peticao-titulo{
+  font-family: var(--font-ui);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin: 1.2rem 0 .5rem;
+}
+.misterio-peticao-titulo:first-child{ margin-top: 0; }
+
+.ladainha-linha{
+  margin: 0 0 .55rem !important;
+  line-height: 1.35 !important;
+}
+.ladainha-linha .lingua-pt{
+  display: block;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.ladainha-linha .lingua-lt{
+  display: block;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: .9rem;
+  color: var(--ink-dim);
+  margin-top: .05rem;
+}
+
+/* ---------- Rito Tridentino: latim em destaque, português como tradução ---------- */
+.rito-tridentino .ladainha-linha{
+  display: flex;
+  flex-direction: column;
+}
+.rito-tridentino .ladainha-linha .lingua-lt{
+  order: 1;
+  font-style: normal;
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-top: 0;
+}
+.rito-tridentino .ladainha-linha .lingua-pt{
+  order: 2;
+  font-style: italic;
+  font-size: .88rem;
+  color: var(--ink-faint);
+  margin-top: .05rem;
+}
+
+.como-rezar-passos{
+  margin: 0; padding-left: 1.2rem;
+  font-size: .98rem;
+  line-height: 1.65;
+  color: var(--ink);
+}
+.como-rezar-passos li{ margin-bottom: .45rem; }
+
+/* ---------- guia de oração (topo, compacto) ---------- */
+.guia-oracao{
+  margin: 0 1.25rem 1rem;
+}
+.guia-oracao summary{
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-family: var(--font-ui);
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--gold-dim);
+  cursor: pointer;
+  list-style: none;
+  padding: .2rem 0;
+}
+.guia-oracao summary::-webkit-details-marker{ display: none; }
+.guia-oracao summary::after{
+  content: "▾";
+  font-size: .7rem;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+}
+.guia-oracao[open] summary::after{ transform: rotate(180deg); }
+.guia-oracao-body{
+  margin-top: .7rem;
+  padding: .9rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- accordion de orações ---------- */
+.oracoes-integradas{
+  padding: 0 1.25rem 2.5rem;
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.oracao-collapse{
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: .2rem .2rem;
+}
+.oracao-collapse summary{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ink);
+  padding: .8rem 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+.oracao-collapse summary::-webkit-details-marker{ display: none; }
+.oracao-collapse summary::after{
+  content: "+";
+  float: right;
+  color: var(--gold);
+  font-family: var(--font-ui);
+  font-weight: 600;
+}
+.oracao-collapse[open] summary::after{ content: "–"; }
+.oracao-collapse-body{
+  padding: 0 1.1rem 1rem;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.oracao-collapse-body p.rubric{
+  font-family: var(--font-ui);
+  font-style: italic;
+  font-size: .82em;
+  color: var(--rubric);
+}
+
+/* ---------- modo foco (leitura) ---------- */
+.topbar, .tabbar, .reader-controls{
+  transition: opacity .4s cubic-bezier(.22,.61,.36,1), transform .4s cubic-bezier(.22,.61,.36,1);
+}
+body.chrome-hidden .topbar{
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+body.chrome-hidden .tabbar{
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+body.chrome-hidden .reader-controls{
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce){
+  .topbar, .tabbar, .reader-controls{ transition: none; }
+}
+
+/* ---------- símbolos litúrgicos ---------- */
+.lit-symbol{
+  color: var(--rubric);
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+::selection{ background: #EADFC5; color: var(--ink); }
+
+@media(min-width: 780px){
+  .reader{ padding-top: 1rem; }
+}

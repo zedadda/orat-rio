@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Devocionário</title>
+<meta name="description" content="Devocionário digital — orações tradicionais pré-conciliares e orações escolhidas de Santo Afonso de Ligório.">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#FAF8F5">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Devocionário">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-32.png">
+
+<!-- Fontes -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Lora:ital,wght@0,400;0,500;1,400&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button id="btn-back" class="btn-icon hidden" aria-label="Voltar"></button>
+  <div class="brand"><span class="flame" id="brand-flame"></span> <span id="topbar-title">Devocionário</span></div>
+  <div class="spacer"></div>
+  <button id="btn-search" class="btn-icon" aria-label="Buscar"></button>
+  <button id="user-badge" class="user-badge" aria-label="Configurações"></button>
+</header>
+
+<main id="app"></main>
+
+<nav class="tabbar" id="tabbar">
+  <button class="tab-btn" data-tab="#/"><span class="ico" data-icon="home"></span>Início</button>
+  <button class="tab-btn" data-tab="#/mana"><span class="ico" data-icon="bread"></span>Maná</button>
+  <button class="tab-btn" data-tab="#/rosario"><span class="ico" data-icon="beads"></span>Rosário</button>
+  <button class="tab-btn" data-tab="#/missa"><span class="ico" data-icon="chalice"></span>Missa</button>
+</nav>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
