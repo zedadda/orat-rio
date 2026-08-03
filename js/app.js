@@ -60,7 +60,8 @@ const CATEGORY_GLYPH = {
   "sao-jose": "*",
   "anjos-santos": "*",
   "oracoes-diversas": "*",
-  "apendice": "*"
+  "apendice": "*",
+  "enfermos-agonizantes": "†"
 };
 
 let readerSize = Number(localStorage.getItem("devoc:size") || 1.18);
@@ -163,9 +164,11 @@ function renderHome(){
   const jac = JACULATORIAS[Math.floor(Math.random() * JACULATORIAS.length)];
 
   const shortcuts = [
-    { label: "Exame de Consciência", glyph: "†", href: "#/diarias" },
+    { label: "Exame de Consciência", glyph: "†", href: "#/oracao/confissao/exame-consciencia-confissao" },
     { label: "Favoritos", glyph: "♡", href: "#/favoritos" },
-    { label: "Guia do Terço", glyph: "AM", href: "#/rosario" }
+    { label: "Guia do Terço", glyph: "AM", href: "#/rosario" },
+    { label: "Ato de Contrição", glyph: "†", href: "#/oracao/oracoes-diarias/ato-contricao-avulso" },
+    { label: "Comunhão Espiritual", glyph: "*", href: "#/oracao/santissimo-sacramento/comunhao-espiritual-avulsa" }
   ].map(s => `
     <button class="shortcut-card" data-href="${s.href}">
       <span class="shortcut-glyph">${s.glyph}</span>
@@ -291,10 +294,15 @@ function renderPrayer(catId, prayerId){
   setTopbar(cat.title, true);
 
   const fav = isFavorite(catId, prayerId);
-  let dropcapDone = false;
   const paras = prayer.pending
     ? `<div class="pending-note">Esta oração ainda não foi digitada. Envie o texto ou uma foto da página <strong>${prayer.title}</strong> do devocionário que eu incluo aqui.</div>`
     : prayer.text.map((t) => {
+        if (t && typeof t === "object" && "quem" in t && "pt" in t && "lt" in t) {
+          return `<p class="ladainha-linha"><span class="fala-quem fala-quem--${t.quem.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}">${t.quem}</span><span class="lingua-pt">${highlightSymbols(t.pt)}</span><span class="lingua-lt">${highlightSymbols(t.lt)}</span></p>`;
+        }
+        if (t && typeof t === "object" && "quem" in t) {
+          return `<p><span class="fala-quem fala-quem--${t.quem.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}">${t.quem}</span>${highlightSymbols(t.texto)}</p>`;
+        }
         if (t && typeof t === "object" && "pt" in t && "lt" in t) {
           return `<p class="ladainha-linha"><span class="lingua-pt">${highlightSymbols(t.pt)}</span><span class="lingua-lt">${highlightSymbols(t.lt)}</span></p>`;
         }
@@ -304,9 +312,7 @@ function renderPrayer(catId, prayerId){
         if (t && typeof t === "object" && "note" in t) {
           return `<p class="rubric">${highlightSymbols(t.note)}</p>`;
         }
-        const isDropcap = !dropcapDone;
-        dropcapDone = true;
-        return `<p class="${isDropcap ? "dropcap" : ""}">${highlightSymbols(t)}</p>`;
+        return `<p>${highlightSymbols(t)}</p>`;
       }).join("");
 
   $app.innerHTML = `
@@ -434,7 +440,10 @@ function renderSearch(query){
   const items = results.map(({cat, prayer})=> `
     <li class="prayer-item${prayer.pending ? " is-pending" : ""}" data-href="#/oracao/${cat.id}/${prayer.id}">
       <span class="num">${CATEGORY_GLYPH[cat.id] || "†"}</span>
-      <span class="title">${prayer.title}</span>
+      <span class="title-col">
+        <span class="title">${prayer.title}</span>
+        <span class="title-sub">${cat.title}</span>
+      </span>
       ${prayer.pending ? '<span class="tag-pending">a incluir</span>' : ""}
       <span class="chev">›</span>
     </li>
@@ -495,6 +504,12 @@ function renderPrayerBlock(entry){
     }
     if(t && typeof t === "object" && "pt" in t && "lt" in t){
       return `<p class="ladainha-linha"><span class="lingua-pt">${highlightSymbols(t.pt)}</span><span class="lingua-lt">${highlightSymbols(t.lt)}</span></p>`;
+    }
+    if(t && typeof t === "object" && "pessoal" in t){
+      return `<div class="oracao-pessoal-box"><div class="oracao-pessoal-eyebrow">Reze em silêncio</div><p>${highlightSymbols(t.pessoal)}</p></div>`;
+    }
+    if(t && typeof t === "object" && "explicacao" in t){
+      return `<p class="explicacao-inline">${highlightSymbols(t.explicacao)}</p>`;
     }
     if(t && typeof t === "object" && "section" in t){
       return `<div class="misterio-peticao-titulo">${t.section}</div>`;
@@ -844,9 +859,7 @@ function renderMissa(){
 
   const chips = [
     { key: "tridentina", label: "Tridentina" },
-    { key: "tridentinaExplicada", label: "Tridentina Explicada" },
-    { key: "novoOrdo", label: "Novo Ordo" },
-    { key: "novoOrdoExplicada", label: "Novo Ordo Explicado" }
+    { key: "novoOrdo", label: "Novo Ordo" }
   ].map(c => `<button class="chip${c.key === missaSelecao ? " active" : ""}" data-sel="${c.key}">${c.label}</button>`).join("");
 
   const avisoTempo = missaSelecao === "novoOrdo" ? `
@@ -869,10 +882,8 @@ function renderMissa(){
       <div class="list-header">
         <h2>Ordinário da Missa</h2>
         <div class="sub">${
-          missaSelecao === "tridentina" ? "Rito de 1962/1965, bilíngue latim/português." :
-          missaSelecao === "tridentinaExplicada" ? "O que significa cada momento da Missa Tridentina." :
-          missaSelecao === "novoOrdoExplicada" ? "O que significa cada momento — e como assistir com piedade." :
-          "Missal Romano atual."
+          missaSelecao === "tridentina" ? "Rito de 1962/1965, bilíngue latim/português — texto, postura e explicação juntos." :
+          "Missal Romano atual — texto, postura, explicação e orações pessoais juntos."
         }</div>
       </div>
       <div class="chip-row">${chips}</div>

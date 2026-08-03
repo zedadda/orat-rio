@@ -18,6 +18,7 @@
   --gold-dim:      #A3813F;
   --wine:          #8C3232;
   --rubric:        #8C3232;
+  --gold-wash:     #FBF3E3;
   --divider:       #E5D5B8;
   --shadow:        0 4px 12px rgba(0,0,0,.03);
 
@@ -49,6 +50,7 @@ html[data-theme="dark"]{
   --gold-dim:      #C5A059;
   --wine:          #C77A7A;
   --rubric:        #D98888;
+  --gold-wash:     #2A2418;
   --divider:       #3A3226;
   --shadow:        0 4px 14px rgba(0,0,0,.35);
 }
@@ -415,6 +417,18 @@ button{ font-family: inherit; }
   color: var(--ink);
   flex:1;
 }
+.prayer-item .title-col{
+  flex:1;
+  min-width: 0;
+}
+.prayer-item .title-col .title{ display:block; }
+.prayer-item .title-sub{
+  display:block;
+  font-family: var(--font-ui);
+  font-size: .72rem;
+  color: var(--ink-faint);
+  margin-top: .1rem;
+}
 .prayer-item .chev{ color: var(--ink-faint); }
 .prayer-item.is-pending{ opacity:.6; }
 .tag-pending{
@@ -492,6 +506,40 @@ button{ font-family: inherit; }
 .fala-quem--leitor{ color: var(--gold-dim); }
 .fala-quem--todos{ color: var(--ink-faint); }
 .fala-quem--diacono{ color: var(--wine); }
+
+/* ---------- oração pessoal (destaque dourado, silenciosa) ---------- */
+.oracao-pessoal-box{
+  margin: .9rem 0;
+  padding: 1rem 1.15rem;
+  background: var(--gold-wash, #FBF3E3);
+  border-left: 3px solid var(--gold-dim);
+  border-radius: 4px;
+}
+.oracao-pessoal-eyebrow{
+  font-family: var(--font-ui);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: .3rem;
+}
+.oracao-pessoal-box p{
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: .96rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* ---------- explicação breve inline (não vermelha, tom neutro) ---------- */
+p.explicacao-inline{
+  font-family: var(--font-support);
+  font-size: .84rem;
+  line-height: 1.5;
+  color: var(--ink-dim);
+  margin: .2rem 0 .8rem;
+}
 
 /* ---------- rubrica (regra geral, cobre qualquer contêiner) ---------- */
 p.rubric{
